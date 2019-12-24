@@ -1,0 +1,6 @@
+/* 设置全局样式表，让html、body、#app内容充满全屏 */
+html,body,#app{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
