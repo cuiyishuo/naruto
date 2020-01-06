@@ -1,10 +1,24 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import Login from "../components/Login.vue";
+import Register from "../components/Register.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
-
+  {
+    // 访问默认页面是，重定向到登录页
+    path: "/",
+    redirect: "/login"
+  },
+  {
+    path: "/login",
+    component: Login
+  },
+  {
+    path: "/register",
+    component: Register
+  }
 ];
 
 const router = new VueRouter({
