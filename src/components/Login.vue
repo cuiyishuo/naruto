@@ -5,8 +5,12 @@
     <div class="login_box">
       <!-- ----- 登录头像区域 ----- -->
       <div class="avatar_box">
-        <img src="../assets/login/avatar.png" alt="" />
+        <!-- 跳转到注册页面 -->
+        <router-link to="/register"
+          ><img src="../assets/login/avatar.png" alt="注册"
+        /></router-link>
       </div>
+      <!-- 图片内文字 -->
       <div class="avatar_box2">
         <img src="../assets/login/wanmen.png" alt="" />
       </div>
@@ -25,6 +29,8 @@
           <el-input
             prefix-icon="iconfont icon-yonghuming"
             v-model="loginForm.name"
+            type="text"
+            placeholder="输入用户名"
           ></el-input>
         </el-form-item>
         <!-- 密码 -->
@@ -33,6 +39,7 @@
             prefix-icon="iconfont icon-mima"
             v-model="loginForm.pwd"
             type="text"
+            placeholder="输入密码"
           ></el-input>
         </el-form-item>
         <!-- 按钮 -->
@@ -96,6 +103,9 @@ export default {
       // 表单预验证，登录之前对表单对象进行校验,valid是一个bool值，判断字段校验是否通过
       this.$refs.loginFormRef.validate(valid => {
         console.log(valid);
+        if (valid) {
+          console.log("发送登录请求");
+        }
       });
     }
   }
