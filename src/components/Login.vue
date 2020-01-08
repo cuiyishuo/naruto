@@ -38,7 +38,11 @@
           <el-input
             prefix-icon="iconfont icon-mima"
             v-model="loginForm.pwd"
+<<<<<<< HEAD
             type="text"
+=======
+            type="text" 
+>>>>>>> sol-login
             placeholder="输入密码"
           ></el-input>
         </el-form-item>
