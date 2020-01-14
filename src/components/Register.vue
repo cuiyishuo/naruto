@@ -24,22 +24,22 @@
         :rules="registerFormRules"
       >
         <!-- 用户名 -->
-        <el-form-item prop="name">
+        <el-form-item prop="userName">
           <!-- 增加带icon的属性;增加验证条件 -->
           <el-input
             prefix-icon="iconfont icon-yonghuming"
             type="text"
             placeholder="设置用户名"
-            v-model="registerForm.name"
+            v-model="registerForm.userName"
           ></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item prop="pwd">
+        <el-form-item prop="password">
           <el-input
             prefix-icon="iconfont icon-mima"
             type="text"
             placeholder="设置密码"
-            v-model="registerForm.pwd"
+            v-model="registerForm.password"
           ></el-input>
         </el-form-item>
         <!-- 邀请码 -->
@@ -62,6 +62,9 @@
 </template>
 
 <script>
+// 导入注册接口
+import { register } from "../network/main/register";
+
 export default {
   data() {
     const checkPwd = (rule, value, callback) => {
@@ -93,16 +96,16 @@ export default {
     };
     return {
       registerForm: {
-        name: "",
-        pwd: "",
+        userName: "",
+        password: "",
         inviteCode: ""
       },
       registerFormRules: {
-        name: [
+        userName: [
           { required: true, message: "请输入用户名称", trigger: "blur" },
           { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
-        pwd: [
+        password: [
           {
             min: 3,
             max: 15,
@@ -122,6 +125,9 @@ export default {
         console.log(valid);
         if (valid) {
           console.log("发送注册请求");
+          register(this.registerForm).then(res => {
+            console.log(res);
+          });
         }
       });
     },
