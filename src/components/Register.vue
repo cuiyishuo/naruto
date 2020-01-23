@@ -125,9 +125,17 @@ export default {
         console.log(valid);
         if (valid) {
           console.log("发送注册请求");
-          register(this.registerForm).then(res => {
-            console.log(res);
-          });
+          register(this.registerForm)
+            .then(res => {
+              console.log("¥¥¥¥¥¥¥ 响应成功 ¥¥¥¥¥¥");
+              console.log(res);
+              return this.$message.success("恭喜你，注册成功～～");
+            })
+            // 请求失败时
+            .catch(err => {
+              console.log("¥¥¥¥¥¥¥ 响应失败 ¥¥¥¥¥¥");
+              return this.$message.error(err.message);
+            });
         }
       });
     },

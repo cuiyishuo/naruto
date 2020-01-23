@@ -20,24 +20,33 @@ export function request(config) {
   // axios的拦截器
   // 请求拦截
   instance.interceptors.request.use(
+    // 拦截请求成功
     config => {
       if (config.data != "") {
         // 格式化post的body，转换成aa=1&bb=2形式
         config.data = qs.stringify(config.data);
       }
+      // 1、比如config中的一些信息不符合服务器的要求
+      // 2、比如每次发送网络请求时，都希望在界面中显示一个转圈的图标
+      // ！！！3、某些网络请求（如token），必须携带一些信息才能请求，否则跳转
       return config;
     },
+    // 拦截请求失败，发送都没发送成功
     err => {
       console.log(err);
     }
   );
   // 响应拦截
   instance.interceptors.response.use(
+    // 拦截响应成功
     res => {
       return res.data;
     },
+    // // 拦截响应失败
     err => {
       console.log(err);
+      // 加上这句就不会在响应失败后，进不到catch中去
+      return Promise.reject(err.response.data);
     }
   );
   return instance(config);
