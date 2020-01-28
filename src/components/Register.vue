@@ -127,13 +127,24 @@ export default {
           console.log("发送注册请求");
           register(this.registerForm)
             .then(res => {
-              console.log("¥¥¥¥¥¥¥ 响应成功 ¥¥¥¥¥¥");
+              console.log("¥¥¥¥¥¥¥ 注册成功 ¥¥¥¥¥¥");
               console.log(res);
-              return this.$message.success("恭喜你，注册成功～～");
+              this.$message.success("恭喜你，注册成功～～");
+              // 登录后操作
+              // 1、将登录的token保存到sessionStorege中
+              //  1.1、出现除登录注册外的其他api接口，必须在登录后才能访问
+              //  1.2、token只应该在当前网站打开期间生效，所以需要保存在sessionStoreage中，
+              //       而localStorege只要不清浏览器缓存就不会失效
+              // 这里先简单处理一下，回头换jwt
+              console.log(res.data.userName, res.data.password);
+              let token = res.data.userName + res.data.password + "sol666";
+              window.localStorage.setItem("token", token);
+              // 2、通过编程式导航跳转到后台首页
+              this.$router.push("/home");
             })
             // 请求失败时
             .catch(err => {
-              console.log("¥¥¥¥¥¥¥ 响应失败 ¥¥¥¥¥¥");
+              console.log("¥¥¥¥¥¥¥ 注册失败 ¥¥¥¥¥¥");
               return this.$message.error(err.message);
             });
         }

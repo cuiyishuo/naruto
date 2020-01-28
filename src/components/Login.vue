@@ -24,20 +24,20 @@
         ref="loginFormRef"
       >
         <!-- 用户名 -->
-        <el-form-item prop="name">
+        <el-form-item prop="userName">
           <!-- 增加带icon的属性;增加验证条件 -->
           <el-input
             prefix-icon="iconfont icon-yonghuming"
-            v-model="loginForm.name"
+            v-model="loginForm.userName"
             type="text"
             placeholder="输入用户名"
           ></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item prop="pwd">
+        <el-form-item prop="password">
           <el-input
             prefix-icon="iconfont icon-mima"
-            v-model="loginForm.pwd"
+            v-model="loginForm.password"
             type="text"
             placeholder="输入密码"
           ></el-input>
@@ -53,6 +53,9 @@
 </template>
 
 <script>
+// 导入登录接口
+import { login } from "../network/main/login";
+
 export default {
   data() {
     // 自定义密码校验规则
@@ -74,15 +77,15 @@ export default {
     };
     return {
       loginForm: {
-        name: "",
-        pwd: ""
+        userName: "",
+        password: ""
       },
       loginFormRules: {
-        name: [
+        userName: [
           { required: true, message: "请输入用户名称", trigger: "blur" },
           { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
-        pwd: [
+        password: [
           {
             min: 3,
             max: 15,
@@ -105,6 +108,27 @@ export default {
         console.log(valid);
         if (valid) {
           console.log("发送登录请求");
+          login(this.loginForm)
+            .then(res => {
+              console.log("¥¥¥¥¥¥¥ 登录成功 ¥¥¥¥¥¥");
+              console.log(res);
+              this.$message.success("登录成功～～");
+              // 登录后操作
+              // 1、将登录的token保存到sessionStorege中
+              //  1.1、出现除登录注册外的其他api接口，必须在登录后才能访问
+              //  1.2、token只应该在当前网站打开期间生效，所以需要保存在sessionStoreage中，
+              //       而localStorege只要不清浏览器缓存就不会失效
+              // 这里先简单处理一下，回头换jwt
+              console.log(res.data.userName, res.data.password);
+              let token = res.data.userName + res.data.password + "sol666";
+              window.localStorage.setItem("token", token);
+              // 2、通过编程式导航跳转到后台首页
+              this.$router.push("/home");
+            })
+            .catch(err => {
+              console.log("¥¥¥¥¥¥¥ 登录失败 ¥¥¥¥¥¥");
+              return this.$message.error(err.message);
+            });
         }
       });
     }
