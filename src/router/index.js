@@ -36,8 +36,8 @@ router.beforeEach((to, from, next) => {
   if (to.path == "/login" || to.path == "/register") {
     return next();
   }
-  const token = window.localStorage.getItem("token");
-  if (!token) {
+  const authorization = window.localStorage.getItem("authorization");
+  if (!authorization) {
     return next("/login");
   } else {
     return next();

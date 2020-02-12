@@ -112,16 +112,18 @@ export default {
             .then(res => {
               console.log("¥¥¥¥¥¥¥ 登录成功 ¥¥¥¥¥¥");
               console.log(res);
+              let headers = res.headers;
               this.$message.success("登录成功～～");
               // 登录后操作
               // 1、将登录的token保存到sessionStorege中
               //  1.1、出现除登录注册外的其他api接口，必须在登录后才能访问
               //  1.2、token只应该在当前网站打开期间生效，所以需要保存在sessionStoreage中，
               //       而localStorege只要不清浏览器缓存就不会失效
-              // 这里先简单处理一下，回头换jwt
-              console.log(res.data.userName, res.data.password);
-              let token = res.data.userName + res.data.password + "sol666";
-              window.localStorage.setItem("token", token);
+              console.log("header-auth:" + headers.authorization);
+              window.localStorage.setItem(
+                "authorization",
+                headers.authorization
+              );
               // 2、通过编程式导航跳转到后台首页
               this.$router.push("/home");
             })

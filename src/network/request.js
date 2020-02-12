@@ -29,6 +29,13 @@ export function request(config) {
       // 1、比如config中的一些信息不符合服务器的要求
       // 2、比如每次发送网络请求时，都希望在界面中显示一个转圈的图标
       // ！！！3、某些网络请求（如token），必须携带一些信息才能请求，否则跳转
+      const authorization = window.localStorage.getItem("authorization");
+      // 如果localstoreage中有Authorization字段则证明为登录状态，请求时请求头中需要带上这个字段
+      if (authorization != null) {
+        config.headers.Authorization = authorization;
+      } else {
+        console.log("Authorization为null");
+      }
       return config;
     },
     // 拦截请求失败，发送都没发送成功
@@ -40,7 +47,7 @@ export function request(config) {
   instance.interceptors.response.use(
     // 拦截响应成功
     res => {
-      return res.data;
+      return res;
     },
     // // 拦截响应失败
     err => {
