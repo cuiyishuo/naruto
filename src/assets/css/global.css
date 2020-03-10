@@ -8,3 +8,27 @@ body,
   margin: 0;
   padding: 0;
 }
+/* 菜单栏展开箭头样式 important为强制修改 */
+.el-submenu__icon-arrow {
+  color: #fffde4 !important;
+  font-weight: 900 !important;
+}
+/* 面包屑导航 */
+.el-breadcrumb{
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+/* card背景 */
+.el-card{
+  box-shadow: 0 1px  rgba(0, 0, 0, 0.15) !important;
+}
+/* 弹框表单位置 */
+.el-dialog__body{
+  margin-right: 50px;
+  padding-top: 20px;  
+  padding-bottom: 1px;
+  padding-left: 0px;
+  padding-right: 0px;
+  /* padding: 2px 0px; */
+
+}
