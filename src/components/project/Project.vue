@@ -16,7 +16,9 @@
       <!-- 功能按钮 -->
       <el-row :gutter="8">
         <el-col :span="2">
-          <el-button type="primary" @click="dialogVisible = true">新增项目</el-button>
+          <el-button type="primary" @click="dialogVisible = true">
+            新增项目
+          </el-button>
           <!-- 新增项目弹框 -->
           <el-dialog title="新增项目" :visible.sync="dialogVisible" width="35%">
             <!-- 项目表单主体 -->
@@ -38,7 +40,9 @@
               <!-- 表单按钮 -->
               <el-form-item class="addBtn">
                 <el-button @click="resetAddProjectForm()">取 消</el-button>
-                <el-button type="primary" @click="addProject()">确 定</el-button>
+                <el-button type="primary" @click="addProject()">
+                  确 定
+                </el-button>
               </el-form-item>
             </el-form>
           </el-dialog>
@@ -58,13 +62,20 @@
       <el-row>
         <el-table :data="projectData" border stripe>
           <el-table-column type="index" label="id"></el-table-column>
-          <el-table-column prop="projectName" label="项目名称"></el-table-column>
+          <el-table-column
+            prop="projectName"
+            label="项目名称"
+          ></el-table-column>
           <el-table-column prop="projectId" label="项目id"></el-table-column>
           <el-table-column prop="createTime" label="创建时间"></el-table-column>
           <el-table-column label="操作" width="180">
             <!-- 通过csope获取列表每行的数据，并传入方法 -->
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+              ></el-button>
               <el-button
                 type="danger"
                 icon="el-icon-delete"
@@ -78,7 +89,11 @@
                 placement="top"
                 :enterable="false"
               >
-                <el-button type="warning" icon="el-icon-view" size="mini"></el-button>
+                <el-button
+                  type="warning"
+                  icon="el-icon-view"
+                  size="mini"
+                ></el-button>
               </el-tooltip>
             </template>
           </el-table-column>

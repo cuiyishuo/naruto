@@ -23,7 +23,12 @@ import {
   Tooltip,
   Pagination,
   Dialog,
-  MessageBox
+  MessageBox,
+  Select,
+  Option,
+  Switch,
+  Tabs,
+  TabPane
 } from "element-ui";
 
 // 全局注册组件
@@ -48,5 +53,10 @@ Vue.use(TableColumn);
 Vue.use(Tooltip);
 Vue.use(Pagination);
 Vue.use(Dialog);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(Switch);
+Vue.use(Tabs);
+Vue.use(TabPane);
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;

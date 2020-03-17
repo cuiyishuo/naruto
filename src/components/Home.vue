@@ -26,7 +26,11 @@
             <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
           </div>
           <!-- 一级目录 -->
-          <el-submenu :index="model.id + ''" v-for="model in menuList" :key="model.id">
+          <el-submenu
+            :index="model.id + ''"
+            v-for="model in menuList"
+            :key="model.id"
+          >
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{ model.name }}</span>

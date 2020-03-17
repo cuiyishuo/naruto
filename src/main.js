@@ -6,6 +6,9 @@ import "./plugins/element.js";
 import "./assets/font/iconfont.css";
 // 导入全局样式表
 import "./assets/css/global.css";
+// 引入jsonview组建
+import "./plugins/vue-json-pretty.js";
+
 
 Vue.config.productionTip = false;
 
