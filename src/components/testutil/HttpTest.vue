@@ -17,7 +17,9 @@
       <!-- 功能按钮 -->
       <el-row :gutter="10">
         <el-col :span="2.5">
-          <el-button type="primary" @click="invoke()" size="medium">接口调用</el-button>
+          <el-button type="primary" @click="invoke()" size="medium">
+            接口调用
+          </el-button>
         </el-col>
       </el-row>
 
@@ -30,18 +32,21 @@
         label-position="left"
       >
         <el-row :gutter="25">
+          <!-- 域名 -->
           <el-col :span="7">
-            <el-form-item label="域名" prop="host" label-width="50px">
+            <el-form-item label="域名：" prop="host" label-width="55px">
               <el-input v-model="invokeHttpForm.host"></el-input>
             </el-form-item>
           </el-col>
+          <!-- 接口地址 -->
           <el-col :span="10">
-            <el-form-item label="接口地址" prop="apiUrl" label-width="80px">
+            <el-form-item label="接口地址：" prop="apiUrl" label-width="85px">
               <el-input v-model="invokeHttpForm.apiUrl"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="25">
+          <!-- 超时时间下拉选择 -->
           <el-col :span="5">
             <el-form-item label="超时时间(s):" prop="timeOut" label-width="90px">
               <el-select v-model="invokeHttpForm.timeOut" placeholder="请选择">
@@ -55,6 +60,7 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <!-- 请求方法下拉选择-->
           <el-col :span="5">
             <el-form-item label="请求方法：" prop="methods" label-width="85px">
               <el-select
@@ -72,11 +78,13 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <!-- 添加信息头开关 -->
           <el-col :span="2.5">
             <el-form-item label="添加信息头：" prop="header" label-width="100px">
               <el-switch v-model="isHeader" @change="activeChange('header')"></el-switch>
             </el-form-item>
           </el-col>
+          <!-- 添加请求参数开关 -->
           <el-col :span="2">
             <el-form-item label="添加请求参数：" prop="param" label-width="110px">
               <el-switch v-model="isParams" @change="activeChange('param')"></el-switch>
@@ -176,7 +184,7 @@
       </el-form>
 
       <!-- 响应信息-->
-      <el-tabs v-model="activeNameRes">
+      <el-tabs v-model="activeNameRes" type="border-card">
         <!-- 响应结果 -->
         <el-tab-pane label="响应结果" name="responseResult">
           <el-card class="box-card" style="margin-top:2px">

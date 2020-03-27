@@ -5,7 +5,24 @@
       <div>
         <router-link to="/welcome">wanmen测试平台</router-link>
       </div>
-      <el-button type="info" @click="logout">退出</el-button>
+      <div>
+        <el-select
+          v-model="user.lastProjectId"
+          filterable
+          placeholder="选择项目"
+          size="medium"
+          @change="modifyProjectId()"
+        >
+          <el-option
+            v-for="item in curentProjects"
+            :key="item.projectId"
+            :label="item.projectName"
+            :value="item.projectId"
+          >
+          </el-option>
+        </el-select>
+        <el-button type="info" @click="logout" style="margin-left:30px">退出</el-button>
+      </div>
     </el-header>
 
     <el-container>
@@ -26,11 +43,7 @@
             <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
           </div>
           <!-- 一级目录 -->
-          <el-submenu
-            :index="model.id + ''"
-            v-for="model in menuList"
-            :key="model.id"
-          >
+          <el-submenu :index="model.id + ''" v-for="model in menuList" :key="model.id">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{ model.name }}</span>
@@ -60,6 +73,8 @@
 </template>
 
 <script>
+// 导入项目接口
+import { getProjectList, modifyCurrentId, getLastProjectId } from "../network/project";
 export default {
   data() {
     return {
@@ -88,8 +103,30 @@ export default {
           ]
         }
       ],
-      isCollapse: false
+      isCollapse: false,
+      curentProjects: [{}],
+      // 默认选中的项目
+      pageParam: {
+        pageNo: 1,
+        pageSize: 100
+      },
+      user: {
+        lastProjectId: ""
+      }
     };
+  },
+  created() {
+    console.log("加载header项目列表");
+    // 将当前项目默认置为用户的lastProjectId
+    getLastProjectId().then(res => {
+      console.log("lastProjectId:", res.data.data);
+      this.user.lastProjectId = res.data.data;
+    });
+    getProjectList(this.pageParam).then(res => {
+      // 将项目列表对象数组负值给curentProjects
+      let resbody = res.data.data;
+      this.curentProjects = resbody;
+    });
   },
   methods: {
     // 点击切换菜单折叠与展开
@@ -100,6 +137,12 @@ export default {
     logout() {
       window.localStorage.clear();
       this.$router.push("/login");
+    },
+    // 切换项目时更改用户当前项目id
+    modifyProjectId() {
+      modifyCurrentId(this.user).then(res => {
+        console.log(res.data.data);
+      });
     }
   }
 };

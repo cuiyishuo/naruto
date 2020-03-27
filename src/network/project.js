@@ -22,3 +22,20 @@ export function deleteProject(projectId) {
     url: "/main/deleteProject/" + projectId
   });
 }
+
+// 修改用户当前项目
+export function modifyCurrentId(currentProjectId) {
+  return request({
+    method: "post",
+    url: "/main/modifyCurrentId",
+    data: currentProjectId
+  });
+}
+
+// 修改用户当前项目
+export function getLastProjectId() {
+  return request({
+    method: "get",
+    url: "/main/getLastProjectId"
+  });
+}
