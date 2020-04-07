@@ -8,40 +8,53 @@
         }"
         >首页</el-breadcrumb-item
       >
-      <el-breadcrumb-item>测试工具</el-breadcrumb-item>
-      <el-breadcrumb-item>Http 接口测试</el-breadcrumb-item>
+      <el-breadcrumb-item>项目管理</el-breadcrumb-item>
+      <el-breadcrumb-item
+        :to="{
+          path: '/component'
+        }"
+        >组件列表</el-breadcrumb-item
+      >
+      <el-breadcrumb-item>新增组件</el-breadcrumb-item>
     </el-breadcrumb>
-
     <!-- card背景 -->
     <el-card class="box-card">
       <!-- 功能按钮 -->
       <el-row :gutter="10">
         <el-col :span="2.5">
-          <el-button type="primary" @click="invoke()" size="medium">
-            接口调用
+          <el-button type="primary" size="medium" @click="save()">
+            保存
           </el-button>
         </el-col>
       </el-row>
 
       <!-- 接口请求表单区域 -->
       <el-form
-        :model="invokeHttpForm"
-        :rules="invokeHttpRules"
-        ref="invokeHttpRef"
+        :model="componentForm"
+        :rules="componentRules"
+        ref="componentRef"
         size="small"
-        label-position="right"
+        label-position="left"
       >
+        <el-row :gutter="25">
+          <!-- 接口名 -->
+          <el-col :span="10">
+            <el-form-item label="接口名：" prop="interfaceName" label-width="90px">
+              <el-input v-model="componentForm.interfaceName"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="25">
           <!-- 域名 -->
           <el-col :span="7">
-            <el-form-item label="域名：" prop="host" label-width="55px">
-              <el-input v-model="invokeHttpForm.host"></el-input>
+            <el-form-item label="域名：" prop="host" label-width="90px">
+              <el-input v-model="componentForm.host"></el-input>
             </el-form-item>
           </el-col>
           <!-- 接口地址 -->
           <el-col :span="10">
-            <el-form-item label="接口地址：" prop="apiUrl" label-width="85px">
-              <el-input v-model="invokeHttpForm.apiUrl"></el-input>
+            <el-form-item label="接口地址：" prop="apiUrl" label-width="90px">
+              <el-input v-model="componentForm.apiUrl"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -49,7 +62,7 @@
           <!-- 超时时间下拉选择 -->
           <el-col :span="5">
             <el-form-item label="超时时间(s):" prop="timeOut" label-width="90px">
-              <el-select v-model="invokeHttpForm.timeOut" placeholder="请选择">
+              <el-select v-model="componentForm.timeOut" placeholder="请选择">
                 <el-option
                   v-for="item in timeOutOptions"
                   :key="item.value"
@@ -62,9 +75,9 @@
           </el-col>
           <!-- 请求方法下拉选择-->
           <el-col :span="5">
-            <el-form-item label="请求方法：" prop="methods" label-width="85px">
+            <el-form-item label="请求方法：" prop="methods" label-width="90px">
               <el-select
-                v-model="invokeHttpForm.methods"
+                v-model="componentForm.methods"
                 placeholder="请选择"
                 @change="resetInput()"
               >
@@ -182,49 +195,27 @@
           </el-tab-pane>
         </el-tabs>
       </el-form>
-
-      <!-- 响应信息-->
-      <el-tabs v-model="activeNameRes" type="border-card">
-        <!-- 响应结果 -->
-        <el-tab-pane label="响应结果" name="responseResult">
-          <el-card class="box-card" style="margin-top:2px">
-            <vue-json-pretty :path="'res'" :data="response.body" :deep="1" :showLength="true">
-            </vue-json-pretty>
-          </el-card>
-        </el-tab-pane>
-        <!-- 响应头 -->
-        <el-tab-pane label="响应头" name="responseHeader">
-          <el-card class="box-card" style="margin-top:2px">
-            <vue-json-pretty :path="'res'" :data="response.headers" :deep="1" :showLength="true">
-            </vue-json-pretty>
-          </el-card>
-        </el-tab-pane>
-      </el-tabs>
     </el-card>
   </div>
 </template>
 
 <script>
-import { invoke } from "../../network/testutil/testhttp.js";
+import { addComponent } from "../../network/interface/component.js";
 export default {
   data() {
     return {
-      invokeHttpRules: {},
-      // 响应对象
-      response: {
-        headers: {},
-        body: {},
-        statutCode: ""
-      },
+      componentRules: {},
       // 接口请求时提交的表单对象
-      invokeHttpForm: {
+      componentForm: {
+        interfaceName: "",
         host: "beta-api.wanmen.org",
         apiUrl: "",
         timeOut: "3000",
         methods: "get",
         headers: "",
         params: "",
-        body: ""
+        body: "",
+        componentType: "http"
       },
       // 下拉列表选项
       timeOutOptions: [
@@ -272,7 +263,6 @@ export default {
       isParams: false,
       // 默认tab激活状态的标签
       activeName: "",
-      activeNameRes: "responseResult",
       // 请求表单对应的请求对象数组
       reqForm: {
         headers: [{ key: "", value: "" }],
@@ -281,10 +271,22 @@ export default {
     };
   },
   methods: {
-    // 调用测试接口
-    invoke() {
-      console.log("调用接口");
-
+    // 开关关联tab的恶心方法
+    activeChange(activeName) {
+      console.log(activeName);
+      if (activeName.includes("header") && this.isHeader) {
+        this.activeName = "header";
+      } else if (activeName.includes("header")) {
+        this.activeName = "param";
+      }
+      if (activeName.includes("param") && this.isParams) {
+        this.activeName = "param";
+      } else if (activeName.includes("param")) {
+        this.activeName = "header";
+      }
+    },
+    // 保存组件
+    save() {
       // 如果前端有输入，存入对象数组，则将对象数组存入一个对象并转为string
       if (this.reqForm.headers[0].key != "") {
         let headersObj = {};
@@ -293,7 +295,7 @@ export default {
           let val = this.reqForm.headers[i].value;
           headersObj[key] = val;
         }
-        this.invokeHttpForm.headers = JSON.stringify(headersObj);
+        this.componentForm.headers = JSON.stringify(headersObj);
       }
       // 如果前端有输入，存入对象数组，则将对象数组存入一个对象并转为string
       console.log("表单数据显示：", JSON.stringify(this.reqForm.params));
@@ -306,39 +308,25 @@ export default {
           console.log("遍历表单数据key：", this.reqForm.params[i].key);
         }
         console.log("表单对象数组转对象后显示：：", JSON.stringify(paramsObj));
-        if (this.invokeHttpForm.methods.includes("post")) {
-          this.invokeHttpForm.body = JSON.stringify(paramsObj);
-        } else if (this.invokeHttpForm.methods.includes("get")) {
-          this.invokeHttpForm.params = JSON.stringify(paramsObj);
+        if (this.componentForm.methods.includes("post")) {
+          this.componentForm.body = JSON.stringify(paramsObj);
+        } else if (this.componentForm.methods.includes("get")) {
+          this.componentForm.params = JSON.stringify(paramsObj);
         }
-        console.log("对象转请求字符串后显示：", this.invokeHttpForm.params);
       }
-      // 调用测试api接口
-      invoke(this.invokeHttpForm).then(res => {
-        console.log("测试接口响应信息：" + res.data.data);
-        this.response.headers = res.data.data.headers;
-        this.response.body = res.data.data.body;
-        this.response.statutCode = res.data.data.statusCode;
-      });
+      // 调用新增组件接口
+      addComponent(this.componentForm)
+        .then(res => {
+          console.log(res);
+          // 2、通过编程式导航跳转到后台首页
+          this.$router.push("/component");
+        })
+        .catch(err => {
+          console.log("¥¥¥¥¥¥¥ 保存接口失败 ¥¥¥¥¥¥");
+          return this.$message.error(err.message);
+        });
     },
-    // 开关关联tab的恶心方法
-    activeChange(activeName) {
-      console.log(activeName);
-      if (activeName.includes("header") && this.isHeader) {
-        console.log("header1");
-        this.activeName = "header";
-      } else if (activeName.includes("header")) {
-        console.log("param2");
-        this.activeName = "param";
-      }
-      if (activeName.includes("param") && this.isParams) {
-        console.log("param1");
-        this.activeName = "param";
-      } else if (activeName.includes("param")) {
-        console.log("header2");
-        this.activeName = "header";
-      }
-    },
+
     // 添加消息头
     add(tab) {
       if (tab.includes("header")) {
@@ -351,20 +339,6 @@ export default {
           value: "",
           key: ""
         });
-      }
-    },
-    // 删除消息头
-    removeDomain(item, tab) {
-      if (tab.includes("header")) {
-        let index = this.reqForm.headers.indexOf(item);
-        if (index !== -1) {
-          this.reqForm.headers.splice(index, 1);
-        }
-      } else if (tab.includes("param")) {
-        let index = this.reqForm.params.indexOf(item);
-        if (index !== -1) {
-          this.reqForm.params.splice(index, 1);
-        }
       }
     }
   }

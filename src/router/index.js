@@ -6,6 +6,8 @@ import Home from "../components/Home.vue";
 import Welcome from "../components/Welcome.vue";
 import Project from "../components/project/Project.vue";
 import HttpTest from "../components/testutil/HttpTest.vue";
+import Component from "../components/interface/Component.vue";
+import AddHttpComponent from "../components/interface/AddHttpComponent.vue";
 
 Vue.use(VueRouter);
 
@@ -30,7 +32,9 @@ const routes = [
     children: [
       { path: "/welcome", component: Welcome },
       { path: "/project", component: Project },
-      { path: "/httptest", component: HttpTest }
+      { path: "/httptest", component: HttpTest },
+      { path: "/component", component: Component },
+      { path: "/component/addhttp", component: AddHttpComponent }
     ]
   }
 ];

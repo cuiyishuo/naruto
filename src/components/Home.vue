@@ -84,21 +84,26 @@ export default {
         {
           id: 1,
           name: "项目管理",
-          children: [{ id: 1, funcName: "全部项目", path: "project" }]
+          children: [{ id: 1, funcName: "项目列表", path: "project" }]
         },
         {
           id: 2,
-          name: "测试工具",
-          children: [
-            { id: 11, funcName: "Http 接口测试", path: "httptest" },
-            { id: 12, funcName: "dubbo 接口测试", path: "dubbotest" }
-          ]
+          name: "组件管理",
+          children: [{ id: 11, funcName: "组件列表", path: "component" }]
         },
         {
           id: 3,
+          name: "测试工具",
+          children: [
+            { id: 21, funcName: "Http 接口测试", path: "httptest" },
+            { id: 22, funcName: "dubbo 接口测试", path: "dubbotest" }
+          ]
+        },
+        {
+          id: 4,
           name: "性能测试",
           children: [
-            { id: 21, funcName: "jmeter性能测试", path: "jmeter" },
+            { id: 31, funcName: "jmeter性能测试", path: "jmeter" },
             { id: 32, funcName: "压力测试", path: "yali" }
           ]
         }
