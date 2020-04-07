@@ -120,7 +120,7 @@ export default {
       switch (this.componentForm.componentType) {
         case "http":
           console.log("进入http的switch");
-          this.$router.push("/component/addhttp");
+          this.$router.push("/addhttp");
           break;
         case "other":
           this.$router.push("/login");

@@ -31,10 +31,13 @@ const routes = [
     redirect: "/welcome",
     children: [
       { path: "/welcome", component: Welcome },
+      // 项目管理页面
       { path: "/project", component: Project },
+      // 测试工具页面
       { path: "/httptest", component: HttpTest },
+      // 组件管理页面
       { path: "/component", component: Component },
-      { path: "/component/addhttp", component: AddHttpComponent }
+      { path: "/addhttp", component: AddHttpComponent }
     ]
   }
 ];
