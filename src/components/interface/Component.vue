@@ -39,7 +39,7 @@
 
       <!-- 列表区域 -->
       <el-row>
-        <el-table :data="projectData" border stripe>
+        <el-table :data="componentData" border stripe>
           <el-table-column type="index" label="id"></el-table-column>
           <el-table-column prop="interfaceName" label="接口名称"></el-table-column>
           <el-table-column prop="apiUrl" label="接口路径"></el-table-column>
@@ -78,12 +78,15 @@
 </template>
 
 <script>
+import { getComponent } from "../../network/interface/component.js";
 export default {
   data() {
     return {
       componentForm: {
-        componentType: "http"
+        componentType: "http",
+        projectId: ""
       },
+      componentData: [],
       componentTypeOptions: [
         {
           value: "http",
@@ -94,26 +97,38 @@ export default {
           label: "redis组件"
         }
       ],
-      projectData: [],
-      total: 0,
       pageParam: {
         pageNo: 1,
         pageSize: 10
-      }
+      },
+      projectData: [],
+      total: 0
     };
   },
+  created() {
+    console.log("当前组件类型：", this.componentForm.componentType);
+    this.getComponent();
+  },
   methods: {
+    // 获取组件列表数据
+    getComponent() {
+      getComponent(this.componentForm, this.pageParam.pageNo, this.pageParam.pageSize).then(res => {
+        console.log(res.data.data);
+        this.componentData = res.data.data;
+        this.total = Number(res.headers.total);
+      });
+    },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
       console.log("监听分页：" + newSize);
       this.pageParam.pageSize = newSize;
-      this.getpro();
+      this.getComponent();
     },
     // 监听 pageno 改变的事件
     handleCurrentChange(newPageNo) {
       console.log("监听页码：" + newPageNo);
       this.pageParam.pageNo = newPageNo;
-      this.getpro();
+      this.getComponent();
     },
     // 新增组件跳转
     toAddComponent() {
@@ -131,8 +146,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.el-button {
+.el-row {
   margin-bottom: 20px;
+}
+.el-col {
+  border-radius: 4px;
 }
 .el-table {
   font-size: 13px;

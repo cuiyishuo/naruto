@@ -35,6 +35,7 @@
         ref="componentRef"
         size="small"
         label-position="left"
+        label-width="110px"
       >
         <el-row :gutter="25">
           <!-- 接口名 -->
@@ -53,7 +54,7 @@
           </el-col>
           <!-- 接口地址 -->
           <el-col :span="10">
-            <el-form-item label="接口地址：" prop="apiUrl" label-width="90px">
+            <el-form-item label="接口地址：" prop="apiUrl" label-width="100px">
               <el-input v-model="componentForm.apiUrl"></el-input>
             </el-form-item>
           </el-col>
@@ -204,7 +205,13 @@ import { addComponent } from "../../network/interface/component.js";
 export default {
   data() {
     return {
-      componentRules: {},
+      componentRules: {
+        interfaceName: [
+          { required: true, message: "请输入接口名称", trigger: "blur" },
+          { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
+        ],
+        apiUrl: [{ required: true, message: "请输入接口地址", trigger: "blur" }]
+      },
       // 接口请求时提交的表单对象
       componentForm: {
         interfaceName: "",

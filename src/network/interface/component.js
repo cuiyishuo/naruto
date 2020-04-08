@@ -7,3 +7,11 @@ export function addComponent(componentForm) {
     data: componentForm
   });
 }
+
+export function getComponent(componentForm, pageNo, pageSize) {
+  return request({
+    methods: "get",
+    url: "/component/getComponent?pageNo=" + pageNo + "&pageSize=" + pageSize,
+    params: componentForm
+  });
+}
