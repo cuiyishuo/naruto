@@ -106,6 +106,7 @@ export default {
     };
   },
   created() {
+    this.componentForm.projectId = window.localStorage.getItem("lastProjectId");
     console.log("当前组件类型：", this.componentForm.componentType);
     this.getComponent();
   },

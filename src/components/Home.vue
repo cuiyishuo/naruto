@@ -126,6 +126,8 @@ export default {
     getLastProjectId().then(res => {
       console.log("lastProjectId:", res.data.data);
       this.user.lastProjectId = res.data.data;
+      // 将lastProjectId保存到localStoreage中
+      window.localStorage.setItem("lastProjectId", this.user.lastProjectId);
     });
     getProjectList(this.pageParam).then(res => {
       // 将项目列表对象数组负值给curentProjects
@@ -147,6 +149,9 @@ export default {
     modifyProjectId() {
       modifyCurrentId(this.user).then(res => {
         console.log(res.data.data);
+        window.localStorage.setItem("lastProjectId", this.user.lastProjectId);
+        // 2、通过编程式导航跳转到后台首页
+        this.$router.push("/home");
       });
     }
   }
