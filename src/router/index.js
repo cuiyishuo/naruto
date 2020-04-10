@@ -7,9 +7,15 @@ import Welcome from "../components/Welcome.vue";
 import Project from "../components/project/Project.vue";
 import HttpTest from "../components/testutil/HttpTest.vue";
 import Component from "../components/interface/Component.vue";
-import AddHttpComponent from "../components/interface/AddHttpComponent.vue";
+import HttpComponent from "../components/interface/HttpComponent.vue";
 
 Vue.use(VueRouter);
+
+// 解决两次访问相同路由地址报错（NavigationDuplicated）
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err);
+};
 
 const routes = [
   {
@@ -30,6 +36,7 @@ const routes = [
     component: Home,
     redirect: "/welcome",
     children: [
+      // 欢迎页
       { path: "/welcome", component: Welcome },
       // 项目管理页面
       { path: "/project", component: Project },
@@ -37,7 +44,8 @@ const routes = [
       { path: "/httptest", component: HttpTest },
       // 组件管理页面
       { path: "/component", component: Component },
-      { path: "/addhttp", component: AddHttpComponent }
+      { path: "/component/addhttp", component: HttpComponent }, //新增组件
+      { path: "/component/edithttp", component: HttpComponent } // 编辑组件
     ]
   }
 ];

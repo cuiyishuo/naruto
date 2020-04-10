@@ -28,7 +28,8 @@ import {
   Option,
   Switch,
   Tabs,
-  TabPane
+  TabPane,
+  Tag
 } from "element-ui";
 
 // 全局注册组件
@@ -58,5 +59,6 @@ Vue.use(Option);
 Vue.use(Switch);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Tag);
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;

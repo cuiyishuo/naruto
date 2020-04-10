@@ -119,7 +119,11 @@
 
 <script>
 // 导入项目接口
-import { getProjectList, addProject, deleteProject } from "../../network/project";
+import {
+  getProjectList,
+  addProject,
+  deleteProject
+} from "../../network/project";
 
 export default {
   data() {

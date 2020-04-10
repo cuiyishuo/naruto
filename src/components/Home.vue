@@ -21,7 +21,9 @@
           >
           </el-option>
         </el-select>
-        <el-button type="info" @click="logout" style="margin-left:30px">退出</el-button>
+        <el-button type="info" @click="logout" style="margin-left:30px"
+          >退出</el-button
+        >
       </div>
     </el-header>
 
@@ -36,14 +38,18 @@
           :collapse="isCollapse"
           :collapse-transition="false"
           :router="true"
-          :default-active="this.$route.path.substring(1, 20)"
+          :default-active="this.$route.path"
         >
           <!-- 折叠标签按钮 -->
           <div class="toggle-button" @click="toggleCollapse">
             <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
           </div>
           <!-- 一级目录 -->
-          <el-submenu :index="model.id + ''" v-for="model in menuList" :key="model.id">
+          <el-submenu
+            :index="model.id + ''"
+            v-for="model in menuList"
+            :key="model.id"
+          >
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{ model.name }}</span>
@@ -74,7 +80,11 @@
 
 <script>
 // 导入项目接口
-import { getProjectList, modifyCurrentId, getLastProjectId } from "../network/project";
+import {
+  getProjectList,
+  modifyCurrentId,
+  getLastProjectId
+} from "../network/project";
 export default {
   data() {
     return {
@@ -84,27 +94,55 @@ export default {
         {
           id: 1,
           name: "项目管理",
-          children: [{ id: 1, funcName: "项目列表", path: "project" }]
+          children: [
+            {
+              id: 1,
+              funcName: "项目列表",
+              path: "/project"
+            }
+          ]
         },
         {
           id: 2,
           name: "组件管理",
-          children: [{ id: 11, funcName: "组件列表", path: "component" }]
+          children: [
+            {
+              id: 11,
+              funcName: "组件列表",
+              path: "/component"
+            }
+          ]
         },
         {
           id: 3,
           name: "测试工具",
           children: [
-            { id: 21, funcName: "Http 接口测试", path: "httptest" },
-            { id: 22, funcName: "dubbo 接口测试", path: "dubbotest" }
+            {
+              id: 21,
+              funcName: "Http 接口测试",
+              path: "/httptest"
+            },
+            {
+              id: 22,
+              funcName: "dubbo 接口测试",
+              path: "/dubbotest"
+            }
           ]
         },
         {
           id: 4,
           name: "性能测试",
           children: [
-            { id: 31, funcName: "jmeter性能测试", path: "jmeter" },
-            { id: 32, funcName: "压力测试", path: "yali" }
+            {
+              id: 31,
+              funcName: "jmeter性能测试",
+              path: "/jmeter"
+            },
+            {
+              id: 32,
+              funcName: "压力测试",
+              path: "/yali"
+            }
           ]
         }
       ],

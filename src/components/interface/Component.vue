@@ -41,19 +41,44 @@
       <el-row>
         <el-table :data="componentData" border stripe>
           <el-table-column type="index" label="id"></el-table-column>
-          <el-table-column prop="interfaceName" label="接口名称"></el-table-column>
-          <el-table-column prop="apiUrl" label="接口路径"></el-table-column>
-          <el-table-column prop="createTime" label="创建时间"></el-table-column>
-          <el-table-column prop="updateTime" label="更新时间"></el-table-column>
-          <el-table-column label="操作" width="180">
+          <el-table-column
+            prop="interfaceName"
+            label="接口名称"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="apiUrl"
+            label="接口路径"
+            align="center"
+          ></el-table-column>
+          <el-table-column prop="methods" label="接口类型" align="center">
+            <template slot-scope="scope">
+              <el-tag>{{ scope.row.methods }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="创建时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="updateTime"
+            label="更新时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column label="操作" width="120px">
             <!-- 通过csope获取列表每行的数据，并传入方法 -->
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                @click="toEdit(scope.row.interfaceId)"
+              ></el-button>
               <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                @click="open(scope.row.projectId)"
               ></el-button>
             </template>
           </el-table-column>
@@ -113,7 +138,11 @@ export default {
   methods: {
     // 获取组件列表数据
     getComponent() {
-      getComponent(this.componentForm, this.pageParam.pageNo, this.pageParam.pageSize).then(res => {
+      getComponent(
+        this.componentForm,
+        this.pageParam.pageNo,
+        this.pageParam.pageSize
+      ).then(res => {
         console.log(res.data.data);
         this.componentData = res.data.data;
         this.total = Number(res.headers.total);
@@ -136,11 +165,18 @@ export default {
       switch (this.componentForm.componentType) {
         case "http":
           console.log("进入http的switch");
-          this.$router.push("/addhttp");
+          this.$router.push("/component/addhttp");
           break;
         case "other":
           this.$router.push("/login");
       }
+    },
+    // 编辑组件
+    toEdit(interfaceId) {
+      console.log("进入的接口id：", interfaceId);
+      this.$router.push("/component/edithttp");
+      // 将interfaceId提交到store中
+      this.$store.commit("getInterfaceId", interfaceId);
     }
   }
 };
