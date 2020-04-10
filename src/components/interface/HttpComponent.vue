@@ -227,7 +227,8 @@
 <script>
 import {
   addComponent,
-  getComponent
+  getComponent,
+  updateComponent
 } from "../../network/interface/component.js";
 export default {
   data() {
@@ -237,10 +238,14 @@ export default {
           { required: true, message: "请输入接口名称", trigger: "blur" },
           { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" }
         ],
-        apiUrl: [{ required: true, message: "请输入接口地址", trigger: "blur" }]
+        apiUrl: [
+          { required: true, message: "请输入接口地址", trigger: "blur" }
+        ],
+        host: [{ required: true, message: "请输入域名", trigger: "blur" }]
       },
       // 接口请求时提交的表单对象
       componentForm: {
+        id: "",
         interfaceName: "",
         host: "beta-api.wanmen.org",
         apiUrl: "",
@@ -249,7 +254,8 @@ export default {
         headers: "",
         params: "",
         body: "",
-        componentType: "http"
+        componentType: "http",
+        updateTime: ""
       },
       selectComponentData: {
         id: ""
@@ -429,17 +435,33 @@ export default {
               this.componentForm.params = JSON.stringify(paramsObj);
             }
           }
-          // 调用新增组件接口
-          addComponent(this.componentForm)
-            .then(res => {
-              console.log(res);
-              // 2、通过编程式导航跳转到后台首页
-              this.$router.push("/component");
-            })
-            .catch(err => {
-              console.log("¥¥¥¥¥¥¥ 保存接口失败 ¥¥¥¥¥¥");
-              return this.$message.error(err.message);
-            });
+          // 如果是编辑则调用编辑接口
+          if (this.$route.path == "/component/edithttp") {
+            // 传入组件id
+            this.componentForm.id = this.$store.state.interfaceId;
+            updateComponent(this.componentForm)
+              .then(res => {
+                console.log(res.data.data);
+                // 通过编程式导航跳转到后台首页
+                this.$router.push("/component");
+              })
+              .catch(err => {
+                console.log("¥¥¥¥¥¥¥ 更新接口失败 ¥¥¥¥¥¥");
+                return this.$message.error(err.message);
+              });
+          } else {
+            // 调用新增组件接口
+            addComponent(this.componentForm)
+              .then(res => {
+                console.log(res.data.data);
+                // 通过编程式导航跳转到后台首页
+                this.$router.push("/component");
+              })
+              .catch(err => {
+                console.log("¥¥¥¥¥¥¥ 保存接口失败 ¥¥¥¥¥¥");
+                return this.$message.error(err.message);
+              });
+          }
         }
       });
     },
