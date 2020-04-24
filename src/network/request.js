@@ -22,7 +22,12 @@ export function request(config) {
   instance.interceptors.request.use(
     // 拦截请求成功
     config => {
-      if (config.data != "") {
+      console.log(config.url);
+      if (
+        config.data != "" &&
+        config.url != "/component/case" &&
+        config.url != "/component/assert"
+      ) {
         // 格式化post的body，转换成aa=1&bb=2形式
         config.data = qs.stringify(config.data);
       }

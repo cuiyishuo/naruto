@@ -17,6 +17,7 @@
       >
       <el-breadcrumb-item>新增组件</el-breadcrumb-item>
     </el-breadcrumb>
+
     <!-- card背景 -->
     <el-card class="box-card">
       <!-- 功能按钮 -->
@@ -26,11 +27,13 @@
             保存
           </el-button>
           <router-link to="/component" style="margin-left:10px">
-            <el-button type="danger" size="medium">
-              取消
+            <el-button type="info" size="medium">
+              返回
             </el-button>
           </router-link>
-          <el-button @click="t1()" style="margin-left:30px">test</el-button>
+          <el-button v-show="false" @click="t1()" style="margin-left:30px"
+            >test</el-button
+          >
         </el-col>
       </el-row>
 
@@ -230,6 +233,7 @@ import {
   getComponent,
   updateComponent
 } from "../../network/interface/component.js";
+import { formateObjList, JSONStrToObjList } from "../../kit/kit.js";
 export default {
   data() {
     return {
@@ -255,7 +259,8 @@ export default {
         params: "",
         body: "",
         componentType: "http",
-        updateTime: ""
+        updateTime: "",
+        style: "model" // 通过接口页面新建的接口模型类型
       },
       selectComponentData: {
         id: ""
@@ -324,6 +329,8 @@ export default {
       let interfaceId = this.$store.state.interfaceId;
       console.log("进入编辑，预加载接口数据：", interfaceId);
       this.selectComponentData.id = interfaceId;
+
+      // 根据接口id获取httpentity
       getComponent(
         this.selectComponentData,
         this.pageParam.pageNo,
@@ -333,23 +340,17 @@ export default {
         // 获取需要的数据信息
         let componentRes = res.data.data[0];
         this.componentForm = componentRes;
+
         // 如果有信息头则把信息头信息渲染到页面
         let headerStr = componentRes.headers;
         if (headerStr != "") {
           this.isHeader = true;
           this.activeName = "header";
-          // 转换header字符串变为object
-          let headerObj = JSON.parse(headerStr);
-          console.log("转换后的headerObj：", headerObj);
-          // 将默认的信息头数组首行空数据删除
-          this.reqForm.headers.shift();
-          // 遍历信息头对象，并将key，value分别push到数组下
-          for (let i = 0; i < Object.keys(headerObj).length; i++) {
-            this.reqForm.headers.push({
-              value: Object.values(headerObj)[i],
-              key: Object.keys(headerObj)[i]
-            });
-          }
+          // 转换param字符串变为object
+          this.reqForm.headers = JSONStrToObjList(
+            headerStr,
+            this.reqForm.headers
+          );
           console.log("遍历后的headerArr：", this.reqForm.headers);
         }
 
@@ -359,17 +360,7 @@ export default {
           this.isParams = true;
           this.activeName = "param";
           // 转换param字符串变为object
-          let paramObj = JSON.parse(paramStr);
-          console.log("转换后的paramObj：", paramObj);
-          // 将默认的参数数组首行空数据删除
-          this.reqForm.params.shift();
-          // 遍历参数对象，并将key，value分别push到数组下
-          for (let i = 0; i < Object.keys(paramObj).length; i++) {
-            this.reqForm.params.push({
-              value: Object.values(paramObj)[i],
-              key: Object.keys(paramObj)[i]
-            });
-          }
+          this.reqForm.params = JSONStrToObjList(paramStr, this.reqForm.params);
           console.log("遍历后的paramArr：", this.reqForm.params);
         }
       });
@@ -406,40 +397,15 @@ export default {
       this.$refs.componentRef.validate(valid => {
         if (valid) {
           // 如果前端有输入，存入对象数组，则将对象数组存入一个对象并转为string
-          if (this.reqForm.headers[0].key != "") {
-            let headersObj = {};
-            for (let i = 0; i < this.reqForm.headers.length; i++) {
-              let key = this.reqForm.headers[i].key;
-              let val = this.reqForm.headers[i].value;
-              headersObj[key] = val;
-            }
-            this.componentForm.headers = JSON.stringify(headersObj);
-          }
-          // 如果前端有输入，存入对象数组，则将对象数组存入一个对象并转为string
-          console.log("表单数据显示：", JSON.stringify(this.reqForm.params));
-          if (this.reqForm.params[0].key != "") {
-            let paramsObj = {};
-            for (let i = 0; i < this.reqForm.params.length; i++) {
-              var key = this.reqForm.params[i].key;
-              var val = this.reqForm.params[i].value;
-              paramsObj[key] = val;
-              console.log("遍历表单数据key：", this.reqForm.params[i].key);
-            }
-            console.log(
-              "表单对象数组转对象后显示：：",
-              JSON.stringify(paramsObj)
-            );
-            if (this.componentForm.methods.includes("post")) {
-              this.componentForm.body = JSON.stringify(paramsObj);
-            } else if (this.componentForm.methods.includes("get")) {
-              this.componentForm.params = JSON.stringify(paramsObj);
-            }
-          }
+          let saveComponentForm = formateObjList(
+            this.reqForm,
+            this.componentForm
+          );
           // 如果是编辑则调用编辑接口
           if (this.$route.path == "/component/edithttp") {
             // 传入组件id
             this.componentForm.id = this.$store.state.interfaceId;
-            updateComponent(this.componentForm)
+            updateComponent(saveComponentForm)
               .then(res => {
                 console.log(res.data.data);
                 // 通过编程式导航跳转到后台首页
@@ -451,7 +417,7 @@ export default {
               });
           } else {
             // 调用新增组件接口
-            addComponent(this.componentForm)
+            addComponent(saveComponentForm)
               .then(res => {
                 console.log(res.data.data);
                 // 通过编程式导航跳转到后台首页

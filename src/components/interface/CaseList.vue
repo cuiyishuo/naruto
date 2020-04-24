@@ -9,16 +9,28 @@
         >首页</el-breadcrumb-item
       >
       <el-breadcrumb-item>项目管理</el-breadcrumb-item>
-      <el-breadcrumb-item>组件列表</el-breadcrumb-item>
+      <el-breadcrumb-item
+        :to="{
+          path: '/component'
+        }"
+        >组件列表</el-breadcrumb-item
+      >
+      <el-breadcrumb-item>用例列表</el-breadcrumb-item>
     </el-breadcrumb>
+
     <!-- card背景 -->
     <el-card class="box-card">
       <!-- 功能按钮 -->
       <el-row :gutter="10">
         <el-col :span="2.5">
-          <el-button type="primary" size="medium" @click="toAddComponent()">
-            新增组件
+          <el-button type="primary" size="medium" @click="toAddCase()">
+            新增测试用例
           </el-button>
+          <router-link to="/component" style="margin-left:10px">
+            <el-button type="info" size="medium">
+              返回
+            </el-button>
+          </router-link>
         </el-col>
       </el-row>
 
@@ -39,40 +51,29 @@
 
       <!-- 列表区域 -->
       <el-row>
-        <el-table :data="componentData" border stripe>
+        <el-table :data="caseData" border stripe>
           <el-table-column type="index" label="id"></el-table-column>
           <el-table-column
-            prop="interfaceName"
-            label="接口名称"
+            prop="caseName"
+            label="用例名称"
             align="center"
           ></el-table-column>
           <el-table-column
-            prop="apiUrl"
-            label="接口路径"
+            prop="caseLevel"
+            label="用例级别"
             align="center"
           ></el-table-column>
-          <el-table-column prop="methods" label="接口类型" align="center">
-            <template slot-scope="scope">
-              <el-tag>{{ scope.row.methods }}</el-tag>
-            </template>
+          <el-table-column prop="createTime" label="创建时间" align="center">
           </el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="创建时间"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="updateTime"
-            label="更新时间"
-            align="center"
-          ></el-table-column>
-          <el-table-column label="操作" width="180px">
+          <el-table-column prop="result" label="测试结果" align="center">
+          </el-table-column>
+          <el-table-column label="操作" align="center">
             <!-- 通过csope获取列表每行的数据，并传入方法 -->
-            <template slot-scope="scope">
+            <template slot-scope="">
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="编辑接口"
+                content="编辑用例"
                 placement="top"
                 :enterable="false"
               >
@@ -80,13 +81,12 @@
                   type="primary"
                   icon="el-icon-edit"
                   size="mini"
-                  @click="toEdit(scope.row.interfaceId)"
                 ></el-button>
               </el-tooltip>
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="测试用例维护"
+                content="执行测试用例"
                 placement="top"
                 :enterable="false"
               >
@@ -94,7 +94,6 @@
                   type="warning"
                   icon="el-icon-folder-opened"
                   size="mini"
-                  @click="toCaseList(scope.row.interfaceId)"
                 ></el-button>
               </el-tooltip>
               <el-button
@@ -125,16 +124,13 @@
 </template>
 
 <script>
-import { getComponent } from "../../network/interface/component.js";
+import { findCase } from "../../network/interface/case.js";
 export default {
   data() {
     return {
-      componentForm: {
-        componentType: "http",
-        projectId: "",
-        style: "model"
-      },
-      componentData: [],
+      componentForm: { componentType: "http" },
+      caseData: [],
+      // 组件类型下拉列表
       componentTypeOptions: [
         {
           value: "http",
@@ -148,64 +144,21 @@ export default {
       pageParam: {
         pageNo: 1,
         pageSize: 10
-      },
-      projectData: [],
-      total: 0
+      }
     };
   },
   created() {
-    this.componentForm.projectId = window.localStorage.getItem("lastProjectId");
-    console.log("当前组件类型：", this.componentForm.componentType);
-    this.getComponent();
+    let interfaceId = this.$store.state.interfaceId;
+    // 调用查询用例接口
+    findCase(interfaceId).then(res => {
+      console.log(res.data.data);
+      this.caseData = res.data.data;
+    });
   },
   methods: {
-    // 获取组件列表数据
-    getComponent() {
-      getComponent(
-        this.componentForm,
-        this.pageParam.pageNo,
-        this.pageParam.pageSize
-      ).then(res => {
-        console.log(res.data.data);
-        this.componentData = res.data.data;
-        this.total = Number(res.headers.total);
-      });
-    },
-    // 监听 pagesize 改变的事件
-    handleSizeChange(newSize) {
-      console.log("监听分页：" + newSize);
-      this.pageParam.pageSize = newSize;
-      this.getComponent();
-    },
-    // 监听 pageno 改变的事件
-    handleCurrentChange(newPageNo) {
-      console.log("监听页码：" + newPageNo);
-      this.pageParam.pageNo = newPageNo;
-      this.getComponent();
-    },
-    // 新增组件跳转
-    toAddComponent() {
-      switch (this.componentForm.componentType) {
-        case "http":
-          console.log("进入http的switch");
-          this.$router.push("/component/addhttp");
-          break;
-        case "other":
-          this.$router.push("/login");
-      }
-    },
-    // 前往编辑组件
-    toEdit(interfaceId) {
-      console.log("进入的接口id：", interfaceId);
-      this.$router.push("/component/edithttp");
-      // 将interfaceId提交到store中
-      this.$store.commit("getInterfaceId", interfaceId);
-    },
-    // 前往测试用例列表
-    toCaseList(interfaceId) {
-      this.$router.push("/component/caselist");
-      // 将interfaceId提交到store中
-      this.$store.commit("getInterfaceId", interfaceId);
+    toAddCase() {
+      let interfaceId = this.$store.state.interfaceId;
+      this.$router.push("/component/" + interfaceId + "/case");
     }
   }
 };

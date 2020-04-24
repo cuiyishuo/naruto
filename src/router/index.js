@@ -8,6 +8,8 @@ import Project from "../components/project/Project.vue";
 import HttpTest from "../components/testutil/HttpTest.vue";
 import Component from "../components/interface/Component.vue";
 import HttpComponent from "../components/interface/HttpComponent.vue";
+import CaseList from "../components/interface/CaseList.vue";
+import AddCase from "../components/interface/AddCase.vue";
 
 Vue.use(VueRouter);
 
@@ -45,7 +47,9 @@ const routes = [
       // 组件管理页面
       { path: "/component", component: Component },
       { path: "/component/addhttp", component: HttpComponent }, //新增组件
-      { path: "/component/edithttp", component: HttpComponent } // 编辑组件
+      { path: "/component/edithttp", component: HttpComponent }, // 编辑组件
+      { path: "/component/caselist", component: CaseList }, // 用例列表
+      { path: "/component/:id/case", component: AddCase, name: "addCase" } // 新增用例
     ]
   }
 ];

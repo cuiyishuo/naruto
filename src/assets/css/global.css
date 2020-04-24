@@ -14,21 +14,23 @@ body,
   font-weight: 900 !important;
 }
 /* 面包屑导航 */
-.el-breadcrumb{
+.el-breadcrumb {
   margin-bottom: 15px;
   font-size: 13px;
 }
 /* card背景 */
-.el-card{
-  box-shadow: 0 1px  rgba(0, 0, 0, 0.15) !important;
+.el-card {
+  box-shadow: 0 1px rgba(0, 0, 0, 0.15) !important;
 }
 /* 弹框表单位置 */
-.el-dialog__body{
+.el-dialog__body {
   margin-right: 50px;
-  padding-top: 20px;  
+  padding-top: 20px;
   padding-bottom: 1px;
   padding-left: 0px;
   padding-right: 0px;
   /* padding: 2px 0px; */
-
+}
+.el-collapse-item__content {
+  padding-bottom: 0px;
 }

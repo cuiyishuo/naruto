@@ -29,7 +29,9 @@ import {
   Switch,
   Tabs,
   TabPane,
-  Tag
+  Tag,
+  Collapse,
+  CollapseItem
 } from "element-ui";
 
 // 全局注册组件
@@ -60,5 +62,9 @@ Vue.use(Switch);
 Vue.use(Tabs);
 Vue.use(TabPane);
 Vue.use(Tag);
+Vue.use(Collapse);
+Vue.use(CollapseItem);
+// 全局配置
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$alert = MessageBox.alert;

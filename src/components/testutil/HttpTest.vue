@@ -48,7 +48,11 @@
         <el-row :gutter="25">
           <!-- 超时时间下拉选择 -->
           <el-col :span="5">
-            <el-form-item label="超时时间(s):" prop="timeOut" label-width="90px">
+            <el-form-item
+              label="超时时间(s):"
+              prop="timeOut"
+              label-width="90px"
+            >
               <el-select v-model="invokeHttpForm.timeOut" placeholder="请选择">
                 <el-option
                   v-for="item in timeOutOptions"
@@ -80,14 +84,28 @@
           </el-col>
           <!-- 添加信息头开关 -->
           <el-col :span="2.5">
-            <el-form-item label="添加信息头：" prop="header" label-width="100px">
-              <el-switch v-model="isHeader" @change="activeChange('header')"></el-switch>
+            <el-form-item
+              label="添加信息头："
+              prop="header"
+              label-width="100px"
+            >
+              <el-switch
+                v-model="isHeader"
+                @change="activeChange('header')"
+              ></el-switch>
             </el-form-item>
           </el-col>
           <!-- 添加请求参数开关 -->
           <el-col :span="2">
-            <el-form-item label="添加请求参数：" prop="param" label-width="110px">
-              <el-switch v-model="isParams" @change="activeChange('param')"></el-switch>
+            <el-form-item
+              label="添加请求参数："
+              prop="param"
+              label-width="110px"
+            >
+              <el-switch
+                v-model="isParams"
+                @change="activeChange('param')"
+              ></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
@@ -188,14 +206,24 @@
         <!-- 响应结果 -->
         <el-tab-pane label="响应结果" name="responseResult">
           <el-card class="box-card" style="margin-top:2px">
-            <vue-json-pretty :path="'res'" :data="response.body" :deep="1" :showLength="true">
+            <vue-json-pretty
+              :path="'res'"
+              :data="response.body"
+              :deep="1"
+              :showLength="true"
+            >
             </vue-json-pretty>
           </el-card>
         </el-tab-pane>
         <!-- 响应头 -->
         <el-tab-pane label="响应头" name="responseHeader">
           <el-card class="box-card" style="margin-top:2px">
-            <vue-json-pretty :path="'res'" :data="response.headers" :deep="1" :showLength="true">
+            <vue-json-pretty
+              :path="'res'"
+              :data="response.headers"
+              :deep="1"
+              :showLength="true"
+            >
             </vue-json-pretty>
           </el-card>
         </el-tab-pane>
