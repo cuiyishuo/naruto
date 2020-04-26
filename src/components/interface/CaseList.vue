@@ -51,7 +51,13 @@
 
       <!-- 列表区域 -->
       <el-row>
-        <el-table :data="caseData" border stripe>
+        <el-table
+          :data="caseData"
+          @selection-change="handleSelectionChange"
+          border
+          stripe
+        >
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column type="index" label="id"></el-table-column>
           <el-table-column
             prop="caseName"
@@ -91,8 +97,8 @@
                 :enterable="false"
               >
                 <el-button
-                  type="warning"
-                  icon="el-icon-folder-opened"
+                  type="success"
+                  icon="el-icon-video-play"
                   size="mini"
                 ></el-button>
               </el-tooltip>
@@ -144,21 +150,48 @@ export default {
       pageParam: {
         pageNo: 1,
         pageSize: 10
-      }
+      },
+      total: 0,
+      caseSelection: []
     };
   },
   created() {
     let interfaceId = this.$store.state.interfaceId;
-    // 调用查询用例接口
-    findCase(interfaceId).then(res => {
-      console.log(res.data.data);
-      this.caseData = res.data.data;
-    });
+    this.getCase(interfaceId);
   },
   methods: {
+    // 获取当前接口下用例数据
+    getCase(interfaceId) {
+      // 调用查询用例接口
+      findCase(interfaceId).then(res => {
+        console.log(res.data.data);
+        this.caseData = res.data.data;
+        this.total = Number(res.headers.total);
+      });
+    },
+    // 跳转到新增用例
     toAddCase() {
       let interfaceId = this.$store.state.interfaceId;
       this.$router.push("/component/" + interfaceId + "/case");
+    },
+    // 获取列表中checkbox选中的数据
+    handleSelectionChange(val) {
+      this.caseSelection = val;
+      console.log(this.caseSelection);
+    },
+    // 监听 pagesize 改变的事件
+    handleSizeChange(newSize) {
+      console.log("监听分页：" + newSize);
+      this.pageParam.pageSize = newSize;
+      let interfaceId = this.$store.state.interfaceId;
+      this.getCase(interfaceId);
+    },
+    // 监听 pageno 改变的事件
+    handleCurrentChange(newPageNo) {
+      console.log("监听页码：" + newPageNo);
+      this.pageParam.pageNo = newPageNo;
+      let interfaceId = this.$store.state.interfaceId;
+      this.getCase(interfaceId);
     }
   }
 };
