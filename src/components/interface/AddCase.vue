@@ -37,7 +37,7 @@
               返回
             </el-button>
           </router-link>
-          <el-button @click="t1()" style="margin-left:30px">test</el-button>
+          <!-- <el-button @click="t1()" style="margin-left:30px">test</el-button> -->
         </el-col>
       </el-row>
 
@@ -378,10 +378,14 @@
 </template>
 
 <script>
-import { addCase, checkExpression } from "../../network/interface/case.js";
+import {
+  addCase,
+  checkExpression,
+  updateCase
+} from "../../network/interface/case.js";
 import { getComponent } from "../../network/interface/component.js";
 import { invoke } from "../../network/testutil/testhttp.js";
-import { formateObjList } from "../../kit/kit.js";
+import { formateObjList, JSONStrToObjList } from "../../kit/kit.js";
 export default {
   data() {
     return {
@@ -545,25 +549,48 @@ export default {
       });
     }
     // 否则视为编辑，查询caseentity，渲染到页面
-    if (this.$route.path == "/component/" + interfaceId + "/caseedit") {
+    if (this.$route.path == "/component/" + interfaceId + "/editcase") {
+      console.log("进入编辑页面");
+      // 获取caseList中存入store的caseRow
+      let caseRow = this.$store.state.caseRow;
+      console.log("编辑前数据：", caseRow);
+      // 赋值给页面数据做渲染
+      this.caseForm = caseRow;
+      this.componentForm = caseRow.HttpForm;
+      // 如果有信息头则把信息头信息渲染到页面
+      let headerStr = caseRow.HttpForm.headers;
+      if (headerStr != "") {
+        this.isHeader = true;
+        this.activeName = "header";
+        this.reqForm.headers = JSONStrToObjList(headerStr);
+      }
+      // 如果有参数则把参数信息渲染到页面
+      let paramStr = caseRow.HttpForm.params + caseRow.HttpForm.body;
+      if (paramStr != "") {
+        this.isParams = true;
+        this.activeName = "param";
+        this.reqForm.params = JSONStrToObjList(paramStr);
+      }
+      // 如果断言信息头表达式不为空
+      if (JSON.stringify(caseRow.assertHeaderList) != "[]") {
+        this.activeNames.push("1");
+      }
+      // 如果断言响应体表达式不为空
+      if (JSON.stringify(caseRow.assertResbodyList) != "[]") {
+        this.activeNames.push("2");
+      }
     }
   },
   methods: {
     t1() {
-      console.log("厨师换获得的接口信息：", this.componentForm, this.reqForm);
-      // 如果没有断言信息则返回空数组
-      // if (this.caseForm.assertHeaderList[0].expression == "") {
-      //   this.caseForm.assertHeaderList = [];
-      // }
-      // if (this.caseForm.assertResbodyList[0].expression == "") {
-      //   this.caseForm.assertResbodyList = [];
-      // }
-      // 将初始化的httpentity 赋值到caseentity中
-      this.caseForm.HttpForm = formateObjList(this.reqForm, this.componentForm);
-      console.log(JSON.stringify(this.caseForm));
-      addCase(JSON.stringify(this.caseForm)).then(res => {
-        console.log(res.data.data);
-      });
+      // console.log("厨师换获得的接口信息：", this.componentForm, this.reqForm);
+      // this.caseForm.HttpForm = formateObjList(this.reqForm, this.componentForm);
+      // console.log(JSON.stringify(this.caseForm));
+      // addCase(JSON.stringify(this.caseForm)).then(res => {
+      //   console.log(res.data.data);
+      // });
+      console.log("厨师换获得的接口信息：", this.caseForm);
+      console.log("厨师换获得的接口信息2：", this.reqForm);
     },
     // 保存用例
     save() {
@@ -578,10 +605,21 @@ export default {
       this.caseForm.HttpForm = formateObjList(this.reqForm, this.componentForm);
       // 设置用例中生成httpentity风格为“case”
       this.caseForm.HttpForm.style = "case";
-      addCase(JSON.stringify(this.caseForm)).then(res => {
-        console.log(res.data.data);
-        this.$router.push("/component/caselist");
-      });
+      // 判断是新增还是编辑
+      if (this.$route.path.includes("editcase")) {
+        console.log("编辑完后页面数据：", this.caseForm);
+        // 调用编辑接口
+        updateCase(JSON.stringify(this.caseForm)).then(res => {
+          console.log(res.data.data);
+          this.$router.push("/component/caselist");
+        });
+      } else {
+        // 调用新增接口
+        addCase(JSON.stringify(this.caseForm)).then(res => {
+          console.log(res.data.data);
+          this.$router.push("/component/caselist");
+        });
+      }
     },
     // 调用测试接口
     invoke() {

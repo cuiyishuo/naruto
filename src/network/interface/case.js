@@ -27,3 +27,13 @@ export function checkExpression(assertExpression) {
     data: assertExpression
   });
 }
+
+// 更新用例
+export function updateCase(caseForm) {
+  return request({
+    method: "patch",
+    url: "/component/case",
+    headers: { "Content-Type": "application/json;charset=UTF-8" },
+    data: caseForm
+  });
+}

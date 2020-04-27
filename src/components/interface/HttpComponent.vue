@@ -347,10 +347,7 @@ export default {
           this.isHeader = true;
           this.activeName = "header";
           // 转换param字符串变为object
-          this.reqForm.headers = JSONStrToObjList(
-            headerStr,
-            this.reqForm.headers
-          );
+          this.reqForm.headers = JSONStrToObjList(headerStr);
           console.log("遍历后的headerArr：", this.reqForm.headers);
         }
 
@@ -360,7 +357,7 @@ export default {
           this.isParams = true;
           this.activeName = "param";
           // 转换param字符串变为object
-          this.reqForm.params = JSONStrToObjList(paramStr, this.reqForm.params);
+          this.reqForm.params = JSONStrToObjList(paramStr);
           console.log("遍历后的paramArr：", this.reqForm.params);
         }
       });

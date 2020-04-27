@@ -75,7 +75,7 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <!-- 通过csope获取列表每行的数据，并传入方法 -->
-            <template slot-scope="">
+            <template slot-scope="scoped">
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -87,6 +87,7 @@
                   type="primary"
                   icon="el-icon-edit"
                   size="mini"
+                  @click="toEditCase(scoped.row)"
                 ></el-button>
               </el-tooltip>
               <el-tooltip
@@ -169,10 +170,21 @@ export default {
         this.total = Number(res.headers.total);
       });
     },
-    // 跳转到新增用例
+    /**
+     * 跳转到新增用例
+     */
     toAddCase() {
       let interfaceId = this.$store.state.interfaceId;
       this.$router.push("/component/" + interfaceId + "/case");
+    },
+    /**
+     * 跳转到编辑用例页面，并将row数据保存至store
+     */
+    toEditCase(scopredRow) {
+      let interfaceId = this.$store.state.interfaceId;
+      this.$router.push("/component/" + interfaceId + "/editcase");
+      // 保存行数据到store
+      this.$store.commit("getCaseRow", scopredRow);
     },
     // 获取列表中checkbox选中的数据
     handleSelectionChange(val) {

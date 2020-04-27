@@ -38,7 +38,8 @@ export function formateObjList(objList, jsonStr) {
 }
 
 // 将json字符串转换成对象列表
-export function JSONStrToObjList(jsonStr, objList) {
+export function JSONStrToObjList(jsonStr) {
+  let objList = [];
   // 转换header字符串变为object
   let Obj = JSON.parse(jsonStr);
   console.log("转换后的jsonObj：", Obj);
