@@ -26,7 +26,8 @@ export function request(config) {
       if (
         config.data != "" &&
         config.url != "/component/case" &&
-        config.url != "/component/assert"
+        config.url != "/component/assert" &&
+        config.url != "/build/cases"
       ) {
         // 格式化post的body，转换成aa=1&bb=2形式
         config.data = qs.stringify(config.data);

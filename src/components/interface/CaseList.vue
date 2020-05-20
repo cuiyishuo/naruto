@@ -26,6 +26,13 @@
           <el-button type="primary" size="medium" @click="toAddCase()">
             新增测试用例
           </el-button>
+          <el-button
+            type="success"
+            size="medium"
+            icon="el-icon-video-play"
+            @click="excuteCase()"
+            >执行测试用例</el-button
+          >
           <router-link to="/component" style="margin-left:10px">
             <el-button type="info" size="medium">
               返回
@@ -57,8 +64,12 @@
           border
           stripe
         >
-          <el-table-column type="selection" width="55"> </el-table-column>
-          <el-table-column type="index" label="id"></el-table-column>
+          <el-table-column type="selection" width="36"> </el-table-column>
+          <el-table-column
+            type="index"
+            label="id"
+            align="center"
+          ></el-table-column>
           <el-table-column
             prop="caseName"
             label="用例名称"
@@ -73,7 +84,7 @@
           </el-table-column>
           <el-table-column prop="result" label="测试结果" align="center">
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" align="center" width="120">
             <!-- 通过csope获取列表每行的数据，并传入方法 -->
             <template slot-scope="scoped">
               <el-tooltip
@@ -88,19 +99,6 @@
                   icon="el-icon-edit"
                   size="mini"
                   @click="toEditCase(scoped.row)"
-                ></el-button>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="执行测试用例"
-                placement="top"
-                :enterable="false"
-              >
-                <el-button
-                  type="success"
-                  icon="el-icon-video-play"
-                  size="mini"
                 ></el-button>
               </el-tooltip>
               <el-button
@@ -132,6 +130,7 @@
 
 <script>
 import { findCase } from "../../network/interface/case.js";
+import { buildCases, runCases } from "../../network/testbuild/buildcase.js";
 export default {
   data() {
     return {
@@ -153,7 +152,11 @@ export default {
         pageSize: 10
       },
       total: 0,
-      caseSelection: []
+      caseSelection: [],
+      buildArrayObj: {
+        interfaceIds: [],
+        caseIds: {}
+      }
     };
   },
   created() {
@@ -204,6 +207,31 @@ export default {
       this.pageParam.pageNo = newPageNo;
       let interfaceId = this.$store.state.interfaceId;
       this.getCase(interfaceId);
+    },
+    // 执行checkbox选中的测试用例
+    async excuteCase() {
+      let caseIds = new Array();
+      this.caseSelection.forEach((el, i) => {
+        console.log(i, el.id);
+        caseIds.push(el.id);
+      });
+      console.log("用例id数组：", caseIds);
+      if (caseIds.length == 0) {
+        this.$message.error("至少勾选1条用例执行");
+      } else {
+        console.log("调用执行用例的接口");
+        this.buildArrayObj.caseIds = caseIds;
+        // 使用async/await配合使用，实现同步，await执行完后，才执行async的方法
+        let buildId;
+        await buildCases(this.buildArrayObj).then(res => {
+          console.log(res.data.data);
+          buildId = res.data.data;
+        });
+        // 执行完await修饰的方法后再执行用例测试
+        runCases(buildId).then(res => {
+          console.log(res.data.data);
+        });
+      }
     }
   }
 };

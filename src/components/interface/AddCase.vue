@@ -595,12 +595,12 @@ export default {
     // 保存用例
     save() {
       // 如果没有断言信息则返回空数组
-      if (this.caseForm.assertHeaderList[0].expression == "") {
-        this.caseForm.assertHeaderList = [];
-      }
-      if (this.caseForm.assertResbodyList[0].expression == "") {
-        this.caseForm.assertResbodyList = [];
-      }
+      // if (this.caseForm.assertHeaderList[0].expression == "") {
+      //   this.caseForm.assertHeaderList = "";
+      // }
+      // if (this.caseForm.assertResbodyList[0].expression == "") {
+      //   this.caseForm.assertResbodyList = "";
+      // }
       // 将初始化的httpentity 赋值到caseentity中
       this.caseForm.HttpForm = formateObjList(this.reqForm, this.componentForm);
       // 设置用例中生成httpentity风格为“case”
