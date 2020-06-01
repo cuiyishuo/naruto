@@ -8,7 +8,7 @@ export function request(config) {
   axios.defaults.withCredentials = true; // 若跨域请求需要带 cookie 身份识别
 
   const instance = axios.create({
-    baseURL: "http://localhost:8081",
+    baseURL: "http://49.233.14.252:80",
     timeout: 5000,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
