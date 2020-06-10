@@ -19,6 +19,13 @@
           <el-button type="primary" size="medium" @click="toAddComponent()">
             新增组件
           </el-button>
+          <el-button
+            type="success"
+            size="medium"
+            icon="el-icon-video-play"
+            @click="excuteCase()"
+            >执行测试用例</el-button
+          >
         </el-col>
       </el-row>
 
@@ -39,8 +46,18 @@
 
       <!-- 列表区域 -->
       <el-row>
-        <el-table :data="componentData" border stripe>
-          <el-table-column type="index" label="id"></el-table-column>
+        <el-table
+          :data="componentData"
+          border
+          stripe
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="36"> </el-table-column>
+          <el-table-column
+            type="index"
+            label="id"
+            align="center"
+          ></el-table-column>
           <el-table-column
             prop="interfaceName"
             label="接口名称"
@@ -126,6 +143,10 @@
 
 <script>
 import { getComponent } from "../../network/interface/component.js";
+import {
+  buildInterfaces,
+  runCases
+} from "../../network/testbuild/buildcase.js";
 export default {
   data() {
     return {
@@ -145,12 +166,17 @@ export default {
           label: "redis组件"
         }
       ],
+      caseSelection: [],
       pageParam: {
         pageNo: 1,
         pageSize: 10
       },
       projectData: [],
-      total: 0
+      total: 0,
+      buildArrayObj: {
+        interfaceIds: [],
+        caseIds: []
+      }
     };
   },
   created() {
@@ -206,6 +232,36 @@ export default {
       this.$router.push("/component/caselist");
       // 将interfaceId提交到store中
       this.$store.commit("getInterfaceId", interfaceId);
+    },
+    // 获取列表中checkbox选中的数据
+    handleSelectionChange(val) {
+      this.caseSelection = val;
+      console.log(this.caseSelection);
+    },
+    // 执行checkbox选中的测试用例
+    async excuteCase() {
+      let interfaceIds = new Array();
+      this.caseSelection.forEach((el, i) => {
+        console.log(i, el.interfaceId);
+        interfaceIds.push(el.interfaceId);
+      });
+      console.log("接口id数组：", interfaceIds);
+      if (interfaceIds.length == 0) {
+        this.$message.error("至少勾选1个接口执行测试用例");
+      } else {
+        console.log("调用执行用例的接口");
+        this.buildArrayObj.interfaceIds = interfaceIds;
+        // 使用async/await配合使用，实现同步，await执行完后，才执行async的方法
+        let buildId;
+        await buildInterfaces(this.buildArrayObj).then(res => {
+          console.log(res.data.data);
+          buildId = res.data.data;
+        });
+        // 执行完await修饰的方法后再执行用例测试
+        runCases(buildId).then(res => {
+          console.log(res.data.data);
+        });
+      }
     }
   }
 };

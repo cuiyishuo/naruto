@@ -131,17 +131,12 @@ export default {
         },
         {
           id: 4,
-          name: "性能测试",
+          name: "测试报告",
           children: [
             {
               id: 31,
-              funcName: "jmeter性能测试",
-              path: "/jmeter"
-            },
-            {
-              id: 32,
-              funcName: "压力测试",
-              path: "/yali"
+              funcName: "接口测试报告",
+              path: "/report"
             }
           ]
         }

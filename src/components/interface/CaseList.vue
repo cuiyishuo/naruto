@@ -155,7 +155,7 @@ export default {
       caseSelection: [],
       buildArrayObj: {
         interfaceIds: [],
-        caseIds: {}
+        caseIds: []
       }
     };
   },

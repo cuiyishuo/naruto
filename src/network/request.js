@@ -8,8 +8,9 @@ export function request(config) {
   axios.defaults.withCredentials = true; // 若跨域请求需要带 cookie 身份识别
 
   const instance = axios.create({
-    baseURL: "http://49.233.14.252:80",
-    timeout: 5000,
+    // baseURL: "http://49.233.14.252:80",
+    baseURL: "http://localhost:8081",
+    timeout: 50000,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "Access-Control-Allow-Origin": "*",
@@ -27,7 +28,8 @@ export function request(config) {
         config.data != "" &&
         config.url != "/component/case" &&
         config.url != "/component/assert" &&
-        config.url != "/build/cases"
+        config.url != "/build/cases" &&
+        config.url != "/build/interfaces"
       ) {
         // 格式化post的body，转换成aa=1&bb=2形式
         config.data = qs.stringify(config.data);
