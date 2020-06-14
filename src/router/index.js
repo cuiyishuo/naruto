@@ -53,7 +53,8 @@ const routes = [
       { path: "/component/:id/case", component: AddCase, name: "addCase" }, // 新增用例
       { path: "/component/:id/editcase", component: AddCase, name: "addCase" }, // 编辑用例
       // 测试报告页面
-      { path: "/report", component: Report }
+      { path: "/report", component: Report }, // 最后测试报告展示
+      { path: "/report/:id", component: Report } // 当前测试用例展示
     ]
   }
 ];
