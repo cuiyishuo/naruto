@@ -28,36 +28,33 @@
           >
         </el-col>
       </el-row>
+      <div v-for="(item, index) in reportTextArr" :key="index">
+        <div v-if="item.color == 'red'">
+          <span style="color:red">{{ item.text }}</span>
+        </div>
+        <div v-else-if="item.color == 'green'">
+          <span style="color:green">{{ item.text }}</span>
+        </div>
+        <div v-else-if="item.color == 'grey'">
+          <span style="color:grey">{{ item.text }}</span>
+        </div>
+      </div>
     </el-card>
-
-    <div v-for="item in reportText" :key="item">
-      <div v-if="item.color == 'red'">
-        <span style="color:red">{{ item.text }}</span>
-      </div>
-      <div v-else-if="item.color == 'green'">
-        <span style="color:green">{{ item.text }}</span>
-      </div>
-      <div v-else-if="item.color == 'grey'">
-        <span style="color:grey">{{ item.text }}</span>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import {
   getLastReport,
-  getCurrentReport
+  getCurrentReport,
+  getLogs
 } from "../../network/report/report.js";
 
 export default {
   data() {
     return {
-      reportText: [
-        { text: "line1", color: "red" },
-        { text: "line2", color: "green" },
-        { text: "line3", color: "grey" }
-      ]
+      reportTextArr: [],
+      logObj: { buildId: "", lastTimeFileSize: null }
     };
   },
   created() {
@@ -75,10 +72,12 @@ export default {
       // 截取url获取id，并存入对象传入请求方法
       let buildId = path.split("/")[2];
       let buildObj = { buildId: buildId };
+      this.logObj.buildId = buildId;
       // 轮询调用请求build的接口方法
       console.log("截取的buildId的：", buildId);
       this.t = setInterval(() => {
         this.getCurrentBuild(buildObj);
+        this.getLogs(this.logObj);
       }, 2000);
     }
   },
@@ -96,6 +95,28 @@ export default {
           console.log("构建结束啦！！！");
           clearInterval(this.t);
         }
+      });
+    },
+    getLogs(logObj) {
+      getLogs(logObj).then(res => {
+        let resData = res.data.data;
+        console.log("日志文本：", resData.text);
+        console.log("日志上一次指针", resData.lastTimeFileSize);
+        // 将上一次指针保存，用于下次请求
+        this.logObj.lastTimeFileSize = resData.lastTimeFileSize;
+        let textArray = resData.text.split("#End");
+        textArray.pop();
+        console.log("#End后：", textArray);
+        textArray.forEach(text => {
+          let reportTextObj = { text: "", color: "" };
+          let arr = text.split("&");
+          reportTextObj.text = arr[0];
+          console.log(arr[0]);
+          reportTextObj.color = arr[1];
+          console.log(arr[1]);
+          this.reportTextArr.push(reportTextObj);
+          console.log("日志对象数组：", reportTextObj, this.reportTextArr);
+        });
       });
     }
   }

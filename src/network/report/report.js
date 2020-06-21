@@ -17,3 +17,11 @@ export function getCurrentReport(buildId) {
     params: buildId
   });
 }
+
+export function getLogs(logObj) {
+  return request({
+    method: "get",
+    url: "/report/logs",
+    params: logObj
+  });
+}
