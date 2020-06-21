@@ -257,6 +257,7 @@ export default {
           console.log(res.data.data);
           buildId = res.data.data;
         });
+        this.$router.push("/report/" + buildId);
         // 执行完await修饰的方法后再执行用例测试
         runCases(buildId).then(res => {
           console.log(res.data.data);

@@ -1,5 +1,47 @@
 <template>
-  <div>测试报告页2</div>
+  <div>
+    <!-- 面包屑导航 -->
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item
+        :to="{
+          path: '/home'
+        }"
+        >首页</el-breadcrumb-item
+      >
+      <el-breadcrumb-item>测试报告</el-breadcrumb-item>
+      <el-breadcrumb-item>接口测试报告</el-breadcrumb-item>
+    </el-breadcrumb>
+    <!-- card背景 -->
+    <el-card class="box-card">
+      <!-- 功能按钮 -->
+      <el-row :gutter="10">
+        <el-col :span="2.5">
+          <el-button type="primary" size="medium" @click="toAddComponent()">
+            新增组件
+          </el-button>
+          <el-button
+            type="success"
+            size="medium"
+            icon="el-icon-video-play"
+            @click="excuteCase()"
+            >执行测试用例</el-button
+          >
+        </el-col>
+      </el-row>
+    </el-card>
+
+    <div v-for="item in reportText" :key="item">
+      <div v-if="item.color == 'red'">
+        <span style="color:red">{{ item.text }}</span>
+      </div>
+      <div v-else-if="item.color == 'green'">
+        <span style="color:green">{{ item.text }}</span>
+      </div>
+      <div v-else-if="item.color == 'grey'">
+        <span style="color:grey">{{ item.text }}</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -10,7 +52,13 @@ import {
 
 export default {
   data() {
-    return {};
+    return {
+      reportText: [
+        { text: "line1", color: "red" },
+        { text: "line2", color: "green" },
+        { text: "line3", color: "grey" }
+      ]
+    };
   },
   created() {
     console.log("初始化页面数据", this.$route.path);
